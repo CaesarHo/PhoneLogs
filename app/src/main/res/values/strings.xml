@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">PhoneLogs</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+    <string name="txt_mobile">手机</string>
+    <string name="txt_home">住宅</string>
+    <string name="txt_work">单位</string>
+    <string name="txt_work_fax">单位传真</string>
+    <string name="txt_home_fax">住宅传真</string>
+    <string name="txt_pager">寻呼机</string>
+    <string name="txt_call_back">回拨号码</string>
+    <string name="txt_company_main">公司总机</string>
+    <string name="txt_type_car">车载</string>
+    <string name="txt_isdn">ISDN</string>
+    <string name="txt_main">总机</string>
+    <string name="txt_radio">无线装置</string>
+    <string name="txt_telex">电报</string>
+    <string name="txt_tty_tdd">TTY TDD</string>
+    <string name="txt_work_mobile">单位手机</string>
+    <string name="txt_work_pager">单位传呼机</string>
+    <string name="txt_assistant">助理</string>
+    <string name="txt_mms">彩信</string>
+    <string name="txt_other">其他</string>
+    <string name="txt_other_fax">其他传真</string>
+
+</resources>
