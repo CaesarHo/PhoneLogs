@@ -16,7 +16,7 @@
         android:ellipsize="end"
         android:maxLines="1"
         android:text=""
-        android:textColor="@android:color/white"
+        android:textColor="@android:color/black"
         android:textSize="30sp" />
 
     <TextView
@@ -32,6 +32,6 @@
         android:maxLines="1"
         android:text=""
         android:textSize="30sp"
-        android:textColor="@android:color/white"/>
+        android:textColor="@android:color/black"/>
 
 </RelativeLayout>

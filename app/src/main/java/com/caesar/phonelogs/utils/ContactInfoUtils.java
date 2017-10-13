@@ -15,6 +15,7 @@ import com.caesar.phonelogs.global.Constants;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,7 +47,6 @@ public class ContactInfoUtils {
         list = new ArrayList<>();
         contactData = new JSONObject();
         String mimetype = "";
-        String nameInfo = "";
         int oldrid = -1;
         int contactId = -1;
         // 1.查询通讯录所有联系人信息，通过id排序，我们看下android联系人的表就知道，所有的联系人的数据是由RAW_CONTACT_ID来索引开的
@@ -54,7 +54,7 @@ public class ContactInfoUtils {
         Uri uri = Data.CONTENT_URI; // 联系人Uri；
         Cursor cursor = context.getContentResolver().query(uri,
                 null, null, null, Data.RAW_CONTACT_ID);
-        int numm = 0;
+        int num = 0;
         if (cursor == null) {
             return;
         }
@@ -62,8 +62,8 @@ public class ContactInfoUtils {
             contactId = cursor.getInt(cursor.getColumnIndex(Data.RAW_CONTACT_ID));
             if (oldrid != contactId) {
                 jsonObject = new JSONObject();
-                contactData.put("contact" + numm, jsonObject);
-                numm++;
+                contactData.put("contact" + num, jsonObject);
+                num++;
                 oldrid = contactId;
                 DLog.d(TAG, "contactId = " + contactId);
             }
@@ -98,7 +98,7 @@ public class ContactInfoUtils {
 //                DLog.d(TAG, "phoneticLastName = " + phoneticLastName);
 //            }
             if (id != contactId) {
-                DLog.d(TAG, "!name.equals(nameInfo)");
+                DLog.d(TAG, "id != contactId");
                 continue;
             }
             // 1.2 获取各种电话信息
@@ -109,180 +109,180 @@ public class ContactInfoUtils {
                 if (phoneType == Phone.TYPE_MOBILE) {
                     String mobile = cursor.getString(cursor.getColumnIndex(Phone.NUMBER));
                     jsonObject.put("mobile", mobile);
-                    ContactInfo ContactInfo = new ContactInfo();
-                    ContactInfo.setNumber(mobile);
-                    ContactInfo.setPhoneType(phoneType);
-                    App.getInstance().getContactInfo().add(ContactInfo);
+                    ContactInfo contactInfo = new ContactInfo();
+                    contactInfo.setNumber(mobile);
+                    contactInfo.setPhoneType(phoneType);
+                    App.getInstance().getContactInfo().add(contactInfo);
                     DLog.d(TAG, "mobile = " + mobile);
                 }
                 // 住宅电话
                 if (phoneType == Phone.TYPE_HOME) {
                     String homeNum = cursor.getString(cursor.getColumnIndex(Phone.NUMBER));
                     jsonObject.put("homeNum", homeNum);
-                    ContactInfo ContactInfo = new ContactInfo();
-                    ContactInfo.setNumber(homeNum);
-                    ContactInfo.setPhoneType(phoneType);
-                    App.getInstance().getContactInfo().add(ContactInfo);
+                    ContactInfo contactInfo = new ContactInfo();
+                    contactInfo.setNumber(homeNum);
+                    contactInfo.setPhoneType(phoneType);
+                    App.getInstance().getContactInfo().add(contactInfo);
                     DLog.d(TAG, "homeNum = " + homeNum);
                 }
                 // 单位电话
                 if (phoneType == Phone.TYPE_WORK) {
                     String jobNum = cursor.getString(cursor.getColumnIndex(Phone.NUMBER));
                     jsonObject.put("jobNum", jobNum);
-                    ContactInfo ContactInfo = new ContactInfo();
-                    ContactInfo.setNumber(jobNum);
-                    ContactInfo.setPhoneType(phoneType);
-                    App.getInstance().getContactInfo().add(ContactInfo);
+                    ContactInfo contactInfo = new ContactInfo();
+                    contactInfo.setNumber(jobNum);
+                    contactInfo.setPhoneType(phoneType);
+                    App.getInstance().getContactInfo().add(contactInfo);
                     DLog.d(TAG, "jobNum = " + jobNum);
                 }
                 // 单位传真
                 if (phoneType == Phone.TYPE_FAX_WORK) {
                     String workFax = cursor.getString(cursor.getColumnIndex(Phone.NUMBER));
                     jsonObject.put("workFax", workFax);
-                    ContactInfo ContactInfo = new ContactInfo();
-                    ContactInfo.setNumber(workFax);
-                    ContactInfo.setPhoneType(phoneType);
-                    App.getInstance().getContactInfo().add(ContactInfo);
+                    ContactInfo contactInfo = new ContactInfo();
+                    contactInfo.setNumber(workFax);
+                    contactInfo.setPhoneType(phoneType);
+                    App.getInstance().getContactInfo().add(contactInfo);
                     DLog.d(TAG, "workFax = " + workFax);
                 }
                 // 住宅传真
                 if (phoneType == Phone.TYPE_FAX_HOME) {
                     String homeFax = cursor.getString(cursor.getColumnIndex(Phone.NUMBER));
                     jsonObject.put("homeFax", homeFax);
-                    ContactInfo ContactInfo = new ContactInfo();
-                    ContactInfo.setNumber(homeFax);
-                    ContactInfo.setPhoneType(phoneType);
-                    App.getInstance().getContactInfo().add(ContactInfo);
+                    ContactInfo contactInfo = new ContactInfo();
+                    contactInfo.setNumber(homeFax);
+                    contactInfo.setPhoneType(phoneType);
+                    App.getInstance().getContactInfo().add(contactInfo);
                     DLog.d(TAG, "homeFax = " + homeFax);
                 }
                 // 寻呼机
                 if (phoneType == Phone.TYPE_PAGER) {
                     String pager = cursor.getString(cursor.getColumnIndex(Phone.NUMBER));
                     jsonObject.put("pager", pager);
-                    ContactInfo ContactInfo = new ContactInfo();
-                    ContactInfo.setNumber(pager);
-                    ContactInfo.setPhoneType(phoneType);
-                    App.getInstance().getContactInfo().add(ContactInfo);
+                    ContactInfo contactInfo = new ContactInfo();
+                    contactInfo.setNumber(pager);
+                    contactInfo.setPhoneType(phoneType);
+                    App.getInstance().getContactInfo().add(contactInfo);
                     DLog.d(TAG, "pager = " + pager);
                 }
                 // 回拨号码
                 if (phoneType == Phone.TYPE_CALLBACK) {
                     String quickNum = cursor.getString(cursor.getColumnIndex(Phone.NUMBER));
                     jsonObject.put("quickNum", quickNum);
-                    ContactInfo ContactInfo = new ContactInfo();
-                    ContactInfo.setNumber(quickNum);
-                    ContactInfo.setPhoneType(phoneType);
-                    App.getInstance().getContactInfo().add(ContactInfo);
+                    ContactInfo contactInfo = new ContactInfo();
+                    contactInfo.setNumber(quickNum);
+                    contactInfo.setPhoneType(phoneType);
+                    App.getInstance().getContactInfo().add(contactInfo);
                     DLog.d(TAG, "quickNum = " + quickNum);
                 }
                 // 公司总机
                 if (phoneType == Phone.TYPE_COMPANY_MAIN) {
                     String jobTel = cursor.getString(cursor.getColumnIndex(Phone.NUMBER));
                     jsonObject.put("jobTel", jobTel);
-                    ContactInfo ContactInfo = new ContactInfo();
-                    ContactInfo.setNumber(jobTel);
-                    ContactInfo.setPhoneType(phoneType);
-                    App.getInstance().getContactInfo().add(ContactInfo);
+                    ContactInfo contactInfo = new ContactInfo();
+                    contactInfo.setNumber(jobTel);
+                    contactInfo.setPhoneType(phoneType);
+                    App.getInstance().getContactInfo().add(contactInfo);
                     DLog.d(TAG, "jobTel = " + jobTel);
                 }
                 // 车载电话
                 if (phoneType == Phone.TYPE_CAR) {
                     String carNum = cursor.getString(cursor.getColumnIndex(Phone.NUMBER));
                     jsonObject.put("carNum", carNum);
-                    ContactInfo ContactInfo = new ContactInfo();
-                    ContactInfo.setNumber(carNum);
-                    ContactInfo.setPhoneType(phoneType);
-                    App.getInstance().getContactInfo().add(ContactInfo);
+                    ContactInfo contactInfo = new ContactInfo();
+                    contactInfo.setNumber(carNum);
+                    contactInfo.setPhoneType(phoneType);
+                    App.getInstance().getContactInfo().add(contactInfo);
                     DLog.d(TAG, "carNum = " + carNum);
                 }
                 // ISDN
                 if (phoneType == Phone.TYPE_ISDN) {
                     String isdn = cursor.getString(cursor.getColumnIndex(Phone.NUMBER));
                     jsonObject.put("isdn", isdn);
-                    ContactInfo ContactInfo = new ContactInfo();
-                    ContactInfo.setNumber(isdn);
-                    ContactInfo.setPhoneType(phoneType);
-                    App.getInstance().getContactInfo().add(ContactInfo);
+                    ContactInfo contactInfo = new ContactInfo();
+                    contactInfo.setNumber(isdn);
+                    contactInfo.setPhoneType(phoneType);
+                    App.getInstance().getContactInfo().add(contactInfo);
                     DLog.d(TAG, "isdn = " + isdn);
                 }
                 // 总机
                 if (phoneType == Phone.TYPE_MAIN) {
                     String tel = cursor.getString(cursor.getColumnIndex(Phone.NUMBER));
                     jsonObject.put("tel", tel);
-                    ContactInfo ContactInfo = new ContactInfo();
-                    ContactInfo.setNumber(tel);
-                    ContactInfo.setPhoneType(phoneType);
-                    App.getInstance().getContactInfo().add(ContactInfo);
+                    ContactInfo contactInfo = new ContactInfo();
+                    contactInfo.setNumber(tel);
+                    contactInfo.setPhoneType(phoneType);
+                    App.getInstance().getContactInfo().add(contactInfo);
                     DLog.d(TAG, "tel = " + tel);
                 }
                 // 无线装置
                 if (phoneType == Phone.TYPE_RADIO) {
                     String wirelessDev = cursor.getString(cursor.getColumnIndex(Phone.NUMBER));
                     jsonObject.put("wirelessDev", wirelessDev);
-                    ContactInfo ContactInfo = new ContactInfo();
-                    ContactInfo.setNumber(wirelessDev);
-                    ContactInfo.setPhoneType(phoneType);
-                    App.getInstance().getContactInfo().add(ContactInfo);
+                    ContactInfo contactInfo = new ContactInfo();
+                    contactInfo.setNumber(wirelessDev);
+                    contactInfo.setPhoneType(phoneType);
+                    App.getInstance().getContactInfo().add(contactInfo);
                     DLog.d(TAG, "wirelessDev = " + wirelessDev);
                 }
                 // 电报
                 if (phoneType == Phone.TYPE_TELEX) {
                     String telegram = cursor.getString(cursor.getColumnIndex(Phone.NUMBER));
                     jsonObject.put("telegram", telegram);
-                    ContactInfo ContactInfo = new ContactInfo();
-                    ContactInfo.setNumber(telegram);
-                    ContactInfo.setPhoneType(phoneType);
-                    App.getInstance().getContactInfo().add(ContactInfo);
+                    ContactInfo contactInfo = new ContactInfo();
+                    contactInfo.setNumber(telegram);
+                    contactInfo.setPhoneType(phoneType);
+                    App.getInstance().getContactInfo().add(contactInfo);
                     DLog.d(TAG, "telegram = " + telegram);
                 }
                 // TTY_TDD
                 if (phoneType == Phone.TYPE_TTY_TDD) {
                     String tty_tdd = cursor.getString(cursor.getColumnIndex(Phone.NUMBER));
                     jsonObject.put("tty_tdd", tty_tdd);
-                    ContactInfo ContactInfo = new ContactInfo();
-                    ContactInfo.setNumber(tty_tdd);
-                    ContactInfo.setPhoneType(phoneType);
-                    App.getInstance().getContactInfo().add(ContactInfo);
+                    ContactInfo contactInfo = new ContactInfo();
+                    contactInfo.setNumber(tty_tdd);
+                    contactInfo.setPhoneType(phoneType);
+                    App.getInstance().getContactInfo().add(contactInfo);
                     DLog.d(TAG, "tty_tdd = " + tty_tdd);
                 }
                 // 单位手机
                 if (phoneType == Phone.TYPE_WORK_MOBILE) {
                     String jobMobile = cursor.getString(cursor.getColumnIndex(Phone.NUMBER));
                     jsonObject.put("jobMobile", jobMobile);
-                    ContactInfo ContactInfo = new ContactInfo();
-                    ContactInfo.setNumber(jobMobile);
-                    ContactInfo.setPhoneType(phoneType);
-                    App.getInstance().getContactInfo().add(ContactInfo);
+                    ContactInfo contactInfo = new ContactInfo();
+                    contactInfo.setNumber(jobMobile);
+                    contactInfo.setPhoneType(phoneType);
+                    App.getInstance().getContactInfo().add(contactInfo);
                     DLog.d(TAG, "jobMobile = " + jobMobile);
                 }
                 // 单位寻呼机
                 if (phoneType == Phone.TYPE_WORK_PAGER) {
                     String jobPager = cursor.getString(cursor.getColumnIndex(Phone.NUMBER));
                     jsonObject.put("jobPager", jobPager);
-                    ContactInfo ContactInfo = new ContactInfo();
-                    ContactInfo.setNumber(jobPager);
-                    ContactInfo.setPhoneType(phoneType);
-                    App.getInstance().getContactInfo().add(ContactInfo);
+                    ContactInfo contactInfo = new ContactInfo();
+                    contactInfo.setNumber(jobPager);
+                    contactInfo.setPhoneType(phoneType);
+                    App.getInstance().getContactInfo().add(contactInfo);
                     DLog.d(TAG, "jobPager = " + jobPager);
                 }
                 // 助理
                 if (phoneType == Phone.TYPE_ASSISTANT) {
                     String assistantNum = cursor.getString(cursor.getColumnIndex(Phone.NUMBER));
                     jsonObject.put("assistantNum", assistantNum);
-                    ContactInfo ContactInfo = new ContactInfo();
-                    ContactInfo.setNumber(assistantNum);
-                    ContactInfo.setPhoneType(phoneType);
-                    App.getInstance().getContactInfo().add(ContactInfo);
+                    ContactInfo contactInfo = new ContactInfo();
+                    contactInfo.setNumber(assistantNum);
+                    contactInfo.setPhoneType(phoneType);
+                    App.getInstance().getContactInfo().add(contactInfo);
                     DLog.d(TAG, "assistantNum = " + assistantNum);
                 }
                 // 彩信
                 if (phoneType == Phone.TYPE_MMS) {
                     String mms = cursor.getString(cursor.getColumnIndex(Phone.NUMBER));
                     jsonObject.put("mms", mms);
-                    ContactInfo ContactInfo = new ContactInfo();
-                    ContactInfo.setNumber(mms);
-                    ContactInfo.setPhoneType(phoneType);
-                    App.getInstance().getContactInfo().add(ContactInfo);
+                    ContactInfo contactInfo = new ContactInfo();
+                    contactInfo.setNumber(mms);
+                    contactInfo.setPhoneType(phoneType);
+                    App.getInstance().getContactInfo().add(contactInfo);
                     DLog.d(TAG, "mms = " + mms);
                 }
                 String mobileEmail = cursor.getString(cursor.getColumnIndex(Email.DATA));

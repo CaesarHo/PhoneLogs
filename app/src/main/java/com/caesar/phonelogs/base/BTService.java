@@ -33,7 +33,6 @@ public class BTService extends IntentService implements DistributedHandler.Handl
 //    public static final String ACTION_SYNC_CALLLOG = Define.ACTION_BT_SYNC_CALLLOG;
     public static final String ACTION_CALLLOG_LOADED = "external.intent.action.bt.ACTION_SYNC_CALLLOG";//加载通话记录
     public static final String ACTON_CONTACT_LOADED = "external.intent.action.bt.ACTION_LOADED_CONTACT";// 加载联系人
-    public static final String ACTON_FAVORITES_LOADED = "external.intent.action.bt.ACTION_LOADED_FAVORITES";//加载收藏夹
     private WeakReference<App> mApp;
 
     public BTService() {
@@ -53,13 +52,6 @@ public class BTService extends IntentService implements DistributedHandler.Handl
         intent.setAction(ACTION_CALLLOG_LOADED);
         context.startService(intent);
         DLog.d(TAG, "onCallLogLoaded");
-    }
-
-    public static void onFavoritesLoaded(Context context) {
-        Intent intent = new Intent(context, BTService.class);
-        intent.setAction(ACTON_FAVORITES_LOADED);
-        context.startService(intent);
-        DLog.d(TAG, "onFavoritesLoaded");
     }
 
     @Override
@@ -86,8 +78,6 @@ public class BTService extends IntentService implements DistributedHandler.Handl
             if (intent.getAction().equals(ACTON_CONTACT_LOADED)) {
                 DLog.d(TAG, action);
             } else if (intent.getAction().equals(ACTION_CALLLOG_LOADED)) {
-                DLog.d(TAG, action);
-            } else if (intent.getAction().equals(ACTON_FAVORITES_LOADED)) {
                 DLog.d(TAG, action);
             }
         }
@@ -127,15 +117,6 @@ public class BTService extends IntentService implements DistributedHandler.Handl
                     cursor.close();
                 }
                 DLog.d(TAG, "onHandleIntent getCallLogs");
-            }else if (ACTON_FAVORITES_LOADED.equals(action)){//加载常用联系人
-                String uriStr = "com.yftech.btservice.FavoritePhoneProvider";
-                Uri uri = Uri.parse("content://" + uriStr + "/");
-                Cursor cursor = resolver.query(uri, new String[]{"_id"}, null, null, "sort_key COLLATE LOCALIZED ASC");
-                SystemDataManager.getInstance().getFavorites(cursor);
-                DLog.d(TAG,"onHandleIntent getFavorites");
-                if (cursor != null){
-                    cursor.close();
-                }
             }
         }
     }

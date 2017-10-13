@@ -74,23 +74,15 @@ public class SystemDataManager {
                         } else if (Phone.CONTENT_ITEM_TYPE.equals(type)) {
                             number = data;
                         }
-                        DLog.d(TAG, "photo = " + photo_id + ",phone_type = " + phone_type + ", sort = " + sort);
                     }
                     dataCursor.close();
                 }
 //                getContractDetails(String.valueOf(contactsId));
                 if (name != null & number != null) {
-                    DLog.d(TAG, "Info = " + name + "," + number);
                     Contact contact = new Contact();
                     contact.setId(contactsId);
                     contact.setName(name);
                     contact.setNumber(number);
-                    //如果联系人是收藏人，则设置为true
-                    for (int i = 0; i < App.getInstance().getFavorites().size(); i++) {
-                        if (contact.getNumber().equalsIgnoreCase(App.getInstance().getFavorites().get(i).getNumber())) {
-                            contact.setFavorite(true);
-                        }
-                    }
                     //去重
                     for (int i = 0; i < App.getInstance().getContacts().size(); i++) {
                         if (contact.getName().equals(App.getInstance().getContacts().get(i).getName()) &
@@ -130,46 +122,6 @@ public class SystemDataManager {
         if (cursor != null) {
             cursor.close();
         }
-    }
-
-    /**
-     * 获取系统常用联系人
-     */
-    public List<Contact> getFavorites(Cursor cursor) {
-        final String KEY_NAME = "name";
-        final String KEY_NUMBER = "phone";
-        final String KEY_TYPE = "type";
-        final String KEY_PHOTO = "photo";
-        final String KEY_PHOTOTYPE = "photo_type";
-        final Bitmap photo = null;
-        if (null != cursor) {
-            while (cursor.moveToNext()) {
-                int contactsId = cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts._ID));
-                String name = cursor.getString(cursor.getColumnIndex(KEY_NAME));
-                String number = cursor.getString(cursor.getColumnIndex(KEY_NUMBER));
-                byte[] imageBarry = cursor.getBlob(cursor.getColumnIndex(KEY_PHOTO));
-                Contact contact = new Contact();
-                contact.setContactId(contactsId);
-                contact.setFavorite(true);
-                contact.setName(name);
-                contact.setNumber(number);
-                DLog.d(TAG, "contactsId = " + contactsId + ", number = " + number + ",name = " + name);
-//            if (null == imageBarry) {
-//                photo = BitmapFactory.decodeResource(BTApp.getInstance().getApplicationContext().getResources(), R.mipmap.list_head_img);
-//                btContact.setBitmap(photo);
-//            } else {
-//                photo = BitmapFactory.decodeByteArray(imageBarry, 0, imageBarry.length);
-//                btContact.setBitmap(photo);
-//            }
-                App.getInstance().getFavorites().add(contact);
-                DLog.i(TAG, "getFavoriteData = " + contact.getName());
-            }
-            cursor.close();
-        } else {
-            DLog.d(TAG, "getFavoriteData cursor NULL");
-        }
-        App.getInstance().getMainHandler().sendEmptyMessage(Constants.FAVORITES_UI_UPDATE_MSG);
-        return App.getInstance().getFavorites();
     }
 
     public static InputStream openPhoto(long contactId) {
@@ -330,33 +282,4 @@ public class SystemDataManager {
         }
         return true;
     }
-
-
-    /**
-     * 获取系统联系人
-     */
-//    public List<BTContact> getPhoneContacts(Cursor cursor) {
-//        if (cursor != null) {
-//            while (cursor.moveToNext()) {
-//                BTContact btContact = new BTContact();
-//                btContact.setId(cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts._ID)));
-//                btContact.setName(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)));
-//                btContact.setNumber(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.Data.DATA1)));
-//                btContact.setSort(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.SORT_KEY_PRIMARY)));
-//
-//                //如果联系人是收藏人，则设置为true
-//                for (int i = 0; i < BTApp.getInstance().getFavorites().size(); i++) {
-//                    if (btContact.getNumber().equalsIgnoreCase(BTApp.getInstance().getFavorites().get(i).getNumber())) {
-//                        btContact.setFavorite(true);
-//                    }
-//                }
-//                BTApp.getInstance().getContacts().add(btContact);
-//                DLog.d(TAG, "Contact added successfully......");
-//            }
-//            cursor.close();
-//        }
-//
-//        return BTApp.getInstance().getContacts();
-//    }
-
 }

@@ -79,9 +79,6 @@ public class ContactInfoAdapter extends RecyclerView.Adapter<ContactInfoAdapter.
     public void onBindViewHolder(final ViewHolder viewHolder, final int i) {
         viewHolder.tvNumber.setText(mDatas.get(i).getNumber());
         switch (mDatas.get(i).getPhoneType()) {
-            case 0:
-                viewHolder.tvType.setText(R.string.txt_mobile);
-                break;
             case Phone.TYPE_HOME://住宅电话
                 viewHolder.tvType.setText(R.string.txt_home);
                 break;

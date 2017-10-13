@@ -29,7 +29,6 @@ public class App extends Application implements DistributedHandler.HandlerPart {
     public static App app;
     private List<Contact> mContacts;
     private List<CallLog> mCalllogs;
-    private List<Contact> mFavorites;
     private List<ContactInfo> mContactInfos;
 
     private Dialer mDialer;
@@ -54,7 +53,6 @@ public class App extends Application implements DistributedHandler.HandlerPart {
         mContacts = new ArrayList<>();
         mContactInfos = new ArrayList<>();
         mCalllogs = new ArrayList<>();
-        mFavorites = new ArrayList<>();
         mDialer = new Dialer(context);
 
         mMainHandler = new DistributedHandler();
@@ -73,10 +71,6 @@ public class App extends Application implements DistributedHandler.HandlerPart {
 
     public List<CallLog> getCalllogs() {//　电话记录列表
         return mCalllogs;
-    }
-
-    public List<Contact> getFavorites() {//收藏夹列表
-        return mFavorites;
     }
 
     public Dialer getDialer() {

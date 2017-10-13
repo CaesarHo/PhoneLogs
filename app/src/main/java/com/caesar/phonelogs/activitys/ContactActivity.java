@@ -47,6 +47,7 @@ public class ContactActivity extends AppCompatActivity implements View.OnClickLi
     public void initView() {
         iBtnLeft = (ImageButton) findViewById(R.id.ibtn_left);
         tvTitle = (TextView) findViewById(R.id.tv_title);
+        tvTitle.setText("电话分类");
         tvName = (TextView) findViewById(R.id.txt_name);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler);
@@ -63,14 +64,6 @@ public class ContactActivity extends AppCompatActivity implements View.OnClickLi
         try {
             ContactInfoUtils contactInfoUtils = new ContactInfoUtils(this);
             contactInfoUtils.getContactInfo(btContact.getId());
-
-            if (App.getInstance().getContactInfo().size() == 0) {
-                ContactInfo btContactInfo = new ContactInfo();
-                btContactInfo.setPhoneType(0);
-                btContactInfo.setNumber(btContact.getNumber());
-                App.getInstance().getContactInfo().add(btContactInfo);
-                mAdapter.notifyDataSetChanged();
-            }
         } catch (JSONException e) {
             e.printStackTrace();
         }

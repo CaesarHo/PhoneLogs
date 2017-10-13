@@ -152,7 +152,7 @@ public class ContactsFragment extends Fragment implements DistributedHandler.Han
                             public void run() {
                                 getData();
                             }
-                        },1500);
+                        },1000);
                 }
             }
 
@@ -176,7 +176,7 @@ public class ContactsFragment extends Fragment implements DistributedHandler.Han
      * 请求数据
      */
     private void getData() {
-        for (int i = 0; i < 30; i++) {//每次加载十项数据
+        for (int i = 0; i < 50; i++) {//每次加载十项数据
             if (App.getInstance().getContacts().size() == contacts.size()) {
                 DLog.d(TAG, "getContacts().size()==contacts.size()");
                 contactsAdapter.changeState(2);
