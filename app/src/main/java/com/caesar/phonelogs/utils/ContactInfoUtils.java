@@ -52,8 +52,7 @@ public class ContactInfoUtils {
         // 1.查询通讯录所有联系人信息，通过id排序，我们看下android联系人的表就知道，所有的联系人的数据是由RAW_CONTACT_ID来索引开的
         // 所以，先获取所有的人的RAW_CONTACT_ID
         Uri uri = Data.CONTENT_URI; // 联系人Uri；
-        Cursor cursor = context.getContentResolver().query(uri,
-                null, null, null, Data.RAW_CONTACT_ID);
+        Cursor cursor = context.getContentResolver().query(uri, null, null, null, Data.RAW_CONTACT_ID);
         int num = 0;
         if (cursor == null) {
             return;

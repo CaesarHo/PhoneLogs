@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,7 @@ import java.util.Map;
  */
 
 public class ContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private static final String TAG = "ContactsAdapter";
     /**
      * ItemClick的回调接口
      *
@@ -134,6 +136,15 @@ public class ContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             myViewHolder.mTxtName.setText(mDatas.get(i).getName());
             myViewHolder.mTxtNumber.setText(mDatas.get(i).getNumber());
 
+            //方法一
+            Bitmap photo = SystemDataManager.getInstance().getPhotoForId(mDatas.get(i).getId());
+            if (photo != null) {
+                myViewHolder.mImgHead.setImageBitmap(App.getInstance().createCircleBitmap(photo, 10));
+                Log.d(TAG, "photo != null ---> " + "id = " + mDatas.get(i).getId() + mDatas.get(i).getName());
+            } else {
+                myViewHolder.mImgHead.setImageResource(R.mipmap.ic_launcher_round);
+                Log.d(TAG, "photo == null ---> " + "id = " + mDatas.get(i).getId() + mDatas.get(i).getName());
+            }
 //            Bitmap bitmap = SystemDataManager.getInstance().getContactPhoto(mDatas.get(i).getNumber(), false);
 //            if (bitmap != null) {
 //                myViewHolder.mImgHead.setImageBitmap(App.createCircleBitmap(bitmap, 10));
@@ -147,6 +158,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     Intent intent = new Intent(context, ContactActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.putExtra("BTContact", mDatas.get(i));
+                    intent.putExtra("BTContactInfo", mDatas.get(i).getJsonNumber());
                     context.startActivity(intent);
                 }
             });

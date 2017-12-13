@@ -97,7 +97,7 @@ public class BTService extends IntentService implements DistributedHandler.Handl
             final String action = intent.getAction();
             if (ACTON_CONTACT_LOADED.equals(action)) {//加载联系人
                 Uri uri = ContactsContract.RawContacts.CONTENT_URI;
-                Cursor cursor = resolver.query(uri, new String[]{"_id"}, null, null, "sort_key COLLATE LOCALIZED ASC");
+                Cursor cursor = resolver.query(uri, new String[]{"_id", "display_name"}, null, null, "sort_key COLLATE LOCALIZED ASC");
                 SystemDataManager.getInstance().getContacts(this, cursor);
                 if (cursor != null) {
                     cursor.close();

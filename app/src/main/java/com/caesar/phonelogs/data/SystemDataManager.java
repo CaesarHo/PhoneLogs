@@ -19,6 +19,8 @@ import com.caesar.phonelogs.global.Constants;
 import com.caesar.phonelogs.utils.DLog;
 import com.caesar.phonelogs.utils.TransitionTime;
 
+import org.json.JSONObject;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -50,56 +52,229 @@ public class SystemDataManager {
     /**
      * 获取系统联系人
      */
+    private JSONObject contactData;
     public List<Contact> getContacts(Context context, Cursor cursor) {
-        if (cursor != null) {
-            String name = null, number = null;
-            ContentResolver resolver = context.getContentResolver();
-            while (cursor.moveToNext()) {
-                int contactsId = cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts._ID));
-                DLog.d(TAG, "contactsId = " + contactsId);
-                Uri uri = Uri.parse("content://com.android.contacts/raw_contacts/" + contactsId + "/data");
-                Cursor dataCursor = resolver.query(uri, new String[]{
-                        Phone.MIMETYPE, Phone.PHOTO_ID, Phone.DATA1, Phone.DATA2,
-                        Phone.SORT_KEY_PRIMARY}, null, null, null);
-                if (dataCursor != null) {
-                    while (dataCursor.moveToNext()) {
-                        Long photo_id = dataCursor.getLong(dataCursor.getColumnIndex(Phone.PHOTO_ID));
-                        Long phone_type = dataCursor.getLong(dataCursor.getColumnIndex(Phone.DATA2));
-                        String data = dataCursor.getString(dataCursor.getColumnIndex(Phone.DATA1));
-                        String type = dataCursor.getString(dataCursor.getColumnIndex(Phone.MIMETYPE));
-                        String sort = dataCursor.getString(dataCursor.getColumnIndex(Phone.SORT_KEY_PRIMARY));
-//                        Bitmap photo = BitmapFactory.decodeStream(openPhoto(Long.valueOf(contactsId)));
-                        if (StructuredName.CONTENT_ITEM_TYPE.equals(type)) {
-                            name = data;
-                        } else if (Phone.CONTENT_ITEM_TYPE.equals(type)) {
-                            number = data;
+        try {
+            if (cursor != null) {
+                String name = null, number = null;
+
+                ContentResolver resolver = context.getContentResolver();
+                while (cursor.moveToNext()) {
+                    int contactsId = cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts._ID));
+                    name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                    DLog.d(TAG, "contactsId = " + contactsId + ", name = " + name);
+                    Uri uri = Uri.parse("content://com.android.contacts/raw_contacts/" + contactsId + "/data");
+                    Cursor dataCursor = resolver.query(uri, new String[]{
+                            Phone.MIMETYPE, Phone.PHOTO_ID, Phone.DATA1, Phone.DATA2,
+                            Phone.SORT_KEY_PRIMARY, Phone.DISPLAY_NAME, Phone.DATA15}, null, null, null);
+                    contactData = new JSONObject();
+                    if (dataCursor != null) {
+                        App.getInstance().getContactInfo().clear();
+                        while (dataCursor.moveToNext()) {
+                            String type = dataCursor.getString(dataCursor.getColumnIndex(Phone.MIMETYPE));
+//                            byte[] bytes = dataCursor.getBlob(dataCursor.getColumnIndex(Phone.DATA15));
+//                                if (bytes != null) {
+//                                    Bitmap photo = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+//                                    DLog.d(TAG, "getContacts bytes = " + bytes.length);
+//                                }
+                            try {
+                                // 1.2 获取各种电话信息
+                                if (Phone.CONTENT_ITEM_TYPE.equals(type)) {
+                                    int phoneType = dataCursor.getInt(dataCursor.getColumnIndex(Phone.TYPE));
+                                    // 手机
+                                    if (phoneType == Phone.TYPE_MOBILE) {
+                                        String mobile = dataCursor.getString(dataCursor.getColumnIndex(Phone.NUMBER));
+                                        contactData.put("" + phoneType, mobile);
+                                        number = mobile;
+                                        DLog.d(TAG, "mobile = " + mobile + "------>" + "phoneType = " + phoneType);
+                                    }
+                                    // 住宅电话
+                                    if (phoneType == Phone.TYPE_HOME) {
+                                        String homeNum = dataCursor.getString(dataCursor.getColumnIndex(Phone.NUMBER));
+                                        contactData.put("" + phoneType, homeNum);
+                                        DLog.d(TAG, "homeNum = " + homeNum + "------>" + "phoneType = " + phoneType);
+                                    }
+                                    // 单位电话
+                                    if (phoneType == Phone.TYPE_WORK) {
+                                        String jobNum = dataCursor.getString(dataCursor.getColumnIndex(Phone.NUMBER));
+                                        contactData.put("" + phoneType, jobNum);
+                                        DLog.d(TAG, "jobNum = " + jobNum + "------>" + "phoneType = " + phoneType);
+                                    }
+                                    // 单位传真
+                                    if (phoneType == Phone.TYPE_FAX_WORK) {
+                                        String workFax = dataCursor.getString(dataCursor.getColumnIndex(Phone.NUMBER));
+                                        contactData.put("" + phoneType, workFax);
+                                        DLog.d(TAG, "workFax = " + workFax + "------>" + "phoneType = " + phoneType);
+                                    }
+                                    // 住宅传真
+                                    if (phoneType == Phone.TYPE_FAX_HOME) {
+                                        String homeFax = dataCursor.getString(dataCursor.getColumnIndex(Phone.NUMBER));
+                                        contactData.put("" + phoneType, homeFax);
+                                        DLog.d(TAG, "homeFax = " + homeFax + "------>" + "phoneType = " + phoneType);
+                                    }
+                                    // 寻呼机
+                                    if (phoneType == Phone.TYPE_PAGER) {
+                                        String pager = dataCursor.getString(dataCursor.getColumnIndex(Phone.NUMBER));
+                                        contactData.put("" + phoneType, pager);
+                                        DLog.d(TAG, "pager = " + pager + "------>" + "phoneType = " + phoneType);
+                                    }
+                                    // 其他
+                                    if (phoneType == Phone.TYPE_OTHER) {
+                                        String other = dataCursor.getString(dataCursor.getColumnIndex(Phone.NUMBER));
+                                        contactData.put("" + phoneType, other);
+                                        DLog.d(TAG, "other = " + other + "------>" + "phoneType = " + phoneType);
+                                    }
+                                    // 回拨号码
+                                    if (phoneType == Phone.TYPE_CALLBACK) {
+                                        String quickNum = dataCursor.getString(dataCursor.getColumnIndex(Phone.NUMBER));
+                                        contactData.put("" + phoneType, quickNum);
+                                        DLog.d(TAG, "quickNum = " + quickNum + "------>" + "phoneType = " + phoneType);
+                                    }
+                                    // 公司总机
+                                    if (phoneType == Phone.TYPE_COMPANY_MAIN) {
+                                        String jobTel = dataCursor.getString(dataCursor.getColumnIndex(Phone.NUMBER));
+                                        contactData.put("" + phoneType, jobTel);
+                                        DLog.d(TAG, "jobTel = " + jobTel + "------>" + "phoneType = " + phoneType);
+                                    }
+                                    // 车载电话
+                                    if (phoneType == Phone.TYPE_CAR) {
+                                        String carNum = dataCursor.getString(dataCursor.getColumnIndex(Phone.NUMBER));
+                                        contactData.put("" + phoneType, carNum);
+                                        DLog.d(TAG, "carNum = " + carNum + "------>" + "phoneType = " + phoneType);
+                                    }
+                                    // ISDN
+                                    if (phoneType == Phone.TYPE_ISDN) {
+                                        String isdn = dataCursor.getString(dataCursor.getColumnIndex(Phone.NUMBER));
+                                        contactData.put("" + phoneType, isdn);
+                                        DLog.d(TAG, "isdn = " + isdn + "------>" + "phoneType = " + phoneType);
+                                    }
+                                    // 总机
+                                    if (phoneType == Phone.TYPE_MAIN) {
+                                        String tel = dataCursor.getString(dataCursor.getColumnIndex(Phone.NUMBER));
+                                        contactData.put("" + phoneType, tel);
+                                        DLog.d(TAG, "tel = " + tel + "------>" + "phoneType = " + phoneType);
+                                    }
+                                    // 无线装置
+                                    if (phoneType == Phone.TYPE_RADIO) {
+                                        String wirelessDev = dataCursor.getString(dataCursor.getColumnIndex(Phone.NUMBER));
+                                        contactData.put("" + phoneType, wirelessDev);
+                                        DLog.d(TAG, "wirelessDev = " + wirelessDev + "------>" + "phoneType = " + phoneType);
+                                    }
+                                    // 电报
+                                    if (phoneType == Phone.TYPE_TELEX) {
+                                        String telegram = dataCursor.getString(dataCursor.getColumnIndex(Phone.NUMBER));
+                                        contactData.put("" + phoneType, telegram);
+                                        DLog.d(TAG, "telegram = " + telegram + "------>" + "phoneType = " + phoneType);
+                                    }
+                                    // TTY_TDD
+                                    if (phoneType == Phone.TYPE_TTY_TDD) {
+                                        String tty_tdd = dataCursor.getString(dataCursor.getColumnIndex(Phone.NUMBER));
+                                        contactData.put("" + phoneType, tty_tdd);
+                                        DLog.d(TAG, "tty_tdd = " + tty_tdd + "------>" + "phoneType = " + phoneType);
+                                    }
+                                    // 单位手机
+                                    if (phoneType == Phone.TYPE_WORK_MOBILE) {
+                                        String jobMobile = dataCursor.getString(dataCursor.getColumnIndex(Phone.NUMBER));
+                                        contactData.put("" + phoneType, jobMobile);
+                                        DLog.d(TAG, "jobMobile = " + jobMobile + "------>" + "phoneType = " + phoneType);
+                                    }
+                                    // 单位寻呼机
+                                    if (phoneType == Phone.TYPE_WORK_PAGER) {
+                                        String jobPager = dataCursor.getString(dataCursor.getColumnIndex(Phone.NUMBER));
+                                        contactData.put("" + phoneType, jobPager);
+                                        DLog.d(TAG, "jobPager = " + jobPager + "------>" + "phoneType = " + phoneType);
+                                    }
+                                    // 助理
+                                    if (phoneType == Phone.TYPE_ASSISTANT) {
+                                        String assistantNum = dataCursor.getString(dataCursor.getColumnIndex(Phone.NUMBER));
+                                        contactData.put("" + phoneType, assistantNum);
+                                        DLog.d(TAG, "assistantNum = " + assistantNum + "------>" + "phoneType = " + phoneType);
+                                    }
+                                    // 彩信
+                                    if (phoneType == Phone.TYPE_MMS) {
+                                        String mms = dataCursor.getString(dataCursor.getColumnIndex(Phone.NUMBER));
+                                        contactData.put("" + phoneType, mms);
+                                        DLog.d(TAG, "mms = " + mms + "------>" + "phoneType = " + phoneType);
+                                    }
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
+                        dataCursor.close();
                     }
-                    dataCursor.close();
-                }
-//                getContractDetails(String.valueOf(contactsId));
-                if (name != null & number != null) {
-                    Contact contact = new Contact();
-                    contact.setId(contactsId);
-                    contact.setName(name);
-                    contact.setNumber(number);
-                    //去重
-                    for (int i = 0; i < App.getInstance().getContacts().size(); i++) {
-                        if (contact.getName().equals(App.getInstance().getContacts().get(i).getName()) &
-                                contact.getNumber().equals(App.getInstance().getContacts().get(i).getNumber())) {
-//                            DLog.d(TAG, "重复 = " + btContact.getName() + "," + btContact.getNumber());
-                            App.getInstance().getContacts().remove(i);
+                    DLog.i("contactData", contactData.toString());
+                    if (name != null & number != null) {
+                        Contact btContact = new Contact();
+                        btContact.setId(contactsId);
+                        btContact.setName(name);
+                        btContact.setNumber(number);
+                        btContact.setJsonNumber(contactData.toString());
+
+                        //去重
+                        for (int i = 0; i < App.getInstance().getContacts().size(); i++) {
+                            if (btContact.getName().equals(App.getInstance().getContacts().get(i).getName()) &
+                                    btContact.getNumber().equals(App.getInstance().getContacts().get(i).getNumber())) {
+                                App.getInstance().getContacts().remove(i);
+                            }
                         }
+                        DLog.d(TAG, "name = " + btContact.getName() + ",number = " + btContact.getNumber());
+                        App.getInstance().getContacts().add(btContact);
                     }
-                    App.getInstance().getContacts().add(contact);
                 }
             }
-            cursor.close();
+
+            App.getInstance().getMainHandler().sendEmptyMessage(Constants.CONTACTS_UPDATE_UI_MSG);
+            DLog.d(TAG, "Contacts size = " + App.getInstance().getContacts().size());
+        } finally {
+            if (cursor != null) {
+                try {
+                    cursor.close();
+                    DLog.d(TAG, "cursor = close");
+                } catch (Exception e) {
+                    //ignore this
+                    e.printStackTrace();
+                }
+            }
         }
-        App.getInstance().getMainHandler().sendEmptyMessage(Constants.CONTACTS_UPDATE_UI_MSG);
-        DLog.d(TAG, "Contacts size = " + App.getInstance().getContacts().size());
         return App.getInstance().getContacts();
     }
+    public Bitmap getPhotoForId(long contactsId) {
+        Cursor dataCursor = null;
+        ContentResolver resolver = App.getInstance().getApplicationContext().getContentResolver();
+        try {
+            Uri uri = Uri.parse("content://com.android.contacts/raw_contacts/" + contactsId + "/data");
+            dataCursor = resolver.query(uri, new String[]{"_id", "mimetype", "data15"}, null, null, null);
+            if (dataCursor != null) {
+                while (dataCursor.moveToNext()) {
+                    String type = dataCursor.getString(dataCursor.getColumnIndex("mimetype"));
+                    if ("vnd.android.cursor.item/photo".equals(type)) { // 如果他的mimetype类型是photo
+                        byte[] photoByte = dataCursor.getBlob(dataCursor.getColumnIndex("data15"));
+                        if (photoByte != null) {
+                            Bitmap photo = BitmapFactory.decodeByteArray(photoByte, 0, photoByte.length);
+                            DLog.d(TAG, "photoByte != null");
+                            return photo;
+                        } else {
+                            DLog.d(TAG, "photoByte == null");
+                            return null;
+                        }
+                    }
+                }
+                dataCursor.close();
+            }
+        } finally {
+            if (dataCursor != null) {
+                try {
+                    dataCursor.close();
+                } catch (Exception e) {
+                    //ignore this
+                    e.printStackTrace();
+                }
+            }
+        }
+        return null;
+    }
+
 
     /**
      * 根据Id查询该联系人的一个或者多个电话

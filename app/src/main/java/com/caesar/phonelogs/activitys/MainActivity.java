@@ -4,6 +4,9 @@ import android.Manifest;
 import android.content.Context;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -15,6 +18,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.caesar.phonelogs.R;
@@ -28,6 +32,7 @@ import com.mylhyl.acp.AcpOptions;
 
 import org.json.JSONException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -48,6 +53,13 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private Context context;
 
+    private TabLayout mTabLayout;
+    private List<Fragment> tabFragments = null;
+    private List<String> tabIndicators = null;
+    private LogsFragment logsFragment;
+    private ContactsFragment contactsFragment;
+    private BlankFragment blankFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,30 +67,56 @@ public class MainActivity extends AppCompatActivity {
         context = this;
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-        // Set up the ViewPager with the sections adapter.
+        mTabLayout = (TabLayout) findViewById(R.id.tl_tab);
         mViewPager = (ViewPager) findViewById(R.id.container);
-        mViewPager.setAdapter(mSectionsPagerAdapter);
-
+        initTab();
+        initContent();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
             }
         });
         initData();
     }
 
+    private void initTab(){
+        mTabLayout.addTab(mTabLayout.newTab().setText("Tab 1").setIcon(R.mipmap.ic_launcher));
+        mTabLayout.addTab(mTabLayout.newTab().setText("Tab 2").setIcon(R.mipmap.ic_launcher));
+        mTabLayout.addTab(mTabLayout.newTab().setText("Tab 3").setIcon(R.mipmap.ic_launcher));
+        mTabLayout.setupWithViewPager(mViewPager);
+    }
+
+    private void initContent(){
+        tabIndicators = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            tabIndicators.add("Tab " + i);
+        }
+
+        tabFragments = new ArrayList<>();
+        logsFragment = LogsFragment.newInstance("","");
+        tabFragments.add(logsFragment);
+
+        contactsFragment = ContactsFragment.newInstance("","");
+        tabFragments.add(contactsFragment);
+
+        blankFragment = BlankFragment.newInstance("","");
+        tabFragments.add(blankFragment);
+        // Create the adapter that will return a fragment for each of the three primary sections of the activity.
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        // Set up the ViewPager with the sections adapter.
+        mViewPager.setAdapter(mSectionsPagerAdapter);
+
+        mTabLayout.getTabAt(0).select();
+    }
+
     public void initData(){
         //获取通话记录
         Acp.getInstance(this).request(new AcpOptions.Builder().setPermissions(
-                Manifest.permission.READ_CALL_LOG, Manifest.permission.READ_CONTACTS).build(),
+                Manifest.permission.READ_CALL_LOG, Manifest.permission.READ_CONTACTS,Manifest.permission.WRITE_CONTACTS).build(),
                 new AcpListener() {
                     @Override
                     public void onGranted() {
@@ -127,34 +165,17 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            if (position == 0) {
-                return LogsFragment.newInstance("" + position, "");
-            } else if (position == 1) {
-                return ContactsFragment.newInstance("" + position, "");
-            } else {
-                return BlankFragment.newInstance("", "");
-            }
+            return tabFragments.get(position);
         }
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
-            return 3;
+            return tabIndicators.size();
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
-            switch (position) {
-                case 0:
-                    return "SECTION 1";
-                case 1:
-                    return "SECTION 2";
-                case 2:
-                    return "SECTION 3";
-            }
-            return null;
+            return tabIndicators.get(position);
         }
     }
 }

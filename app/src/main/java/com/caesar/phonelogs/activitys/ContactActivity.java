@@ -24,6 +24,11 @@ import com.caesar.phonelogs.utils.DLog;
 import com.caesar.phonelogs.utils.MyDecoration;
 
 import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Iterator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ContactActivity extends AppCompatActivity implements View.OnClickListener, DistributedHandler.HandlerPart {
     public final static String TAG = App.class.getSimpleName() + ContactActivity.class.getSimpleName();
@@ -34,6 +39,7 @@ public class ContactActivity extends AppCompatActivity implements View.OnClickLi
     private TextView tvName;
     private Contact btContact;
     private Bitmap bitmap;
+    private String contactData = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +47,7 @@ public class ContactActivity extends AppCompatActivity implements View.OnClickLi
         setContentView(R.layout.activity_contact);
         App.getInstance().getContactInfo().clear();
         btContact = this.getIntent().getParcelableExtra("BTContact");
+        contactData = this.getIntent().getStringExtra("BTContactInfo");
         initView();
     }
 
@@ -61,24 +68,64 @@ public class ContactActivity extends AppCompatActivity implements View.OnClickLi
 
         initData();
 
-        try {
-            ContactInfoUtils contactInfoUtils = new ContactInfoUtils(this);
-            contactInfoUtils.getContactInfo(btContact.getId());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            ContactInfoUtils contactInfoUtils = new ContactInfoUtils(this);
+//            contactInfoUtils.getContactInfo(btContact.getId());
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
     }
 
     public void initData() {
-        if (btContact.getName().length() >= 10){
-            tvName.setText(btContact.getName().substring(0,10)+"...");
-        }else{
+        if (btContact.getName().length() >= 10) {
+            tvName.setText(btContact.getName().substring(0, 10) + "...");
+        } else {
             tvName.setText(btContact.getName());
         }
-        bitmap = SystemDataManager.getInstance().getContactPhoto(btContact.getNumber(), false);
+        bitmap = SystemDataManager.getInstance().getPhotoForId(btContact.getId());
+        if (bitmap != null) {
+            iBtnLeft.setImageBitmap(App.getInstance().createCircleBitmap(bitmap, 0));
+        }
 
         DLog.d(TAG, "BTContact = " + btContact.toString() + "," + btContact.getId());
+        try {
+            if(contactData != null){
+                JSONObject hostObject = new JSONObject(contactData);
+                Iterator<String> sIterator = hostObject.keys();
+                while (sIterator.hasNext()) {
+                    // 获得key
+                    String key = sIterator.next();
+                    // 根据key获得value, value也可以是JSONObject,JSONArray,使用对应的参数接收即可
+                    String number = hostObject.getString(key);
+                    System.out.println("key: " + key + ",number:" + number);
+                    if (isNumeric(key)){
+                        int id = Integer.parseInt(key);
+                        ContactInfo btContactInfo = new ContactInfo();
+                        btContactInfo.setPhoneType(id);
+                        btContactInfo.setNumber(number);
+                        App.getInstance().getContactInfo().add(btContactInfo);
+                        DLog.d(TAG,"add for contactInfos");
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         setListener();
+    }
+    /**
+     * 利用正则表达式判断字符串是否是数字
+     *
+     * @param str
+     * @return
+     */
+    public boolean isNumeric(String str) {
+        Pattern pattern = Pattern.compile("[0-9]*");
+        Matcher isNum = pattern.matcher(str);
+        if (!isNum.matches()) {
+            return false;
+        }
+        return true;
     }
 
     public void setListener() {

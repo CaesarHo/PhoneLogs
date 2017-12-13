@@ -16,11 +16,20 @@ public class Contact implements Parcelable, Comparable<Contact> {
     private Bitmap bitmap = null;
     private int contactId;
     private String number;
+    private String jsonNumber;
     private String name;
     private String mimeType;
     private long date;
     private Object tag;
     private String key;
+
+    public String getJsonNumber() {
+        return jsonNumber;
+    }
+
+    public void setJsonNumber(String jsonNumber) {
+        this.jsonNumber = jsonNumber;
+    }
 
     public int getContactId() {
         return contactId;

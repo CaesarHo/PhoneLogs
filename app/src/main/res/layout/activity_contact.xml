@@ -13,10 +13,11 @@
 
     <TextView
         android:id="@+id/txt_name"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="42dp"
         android:ellipsize="end"
+        android:gravity="center"
         android:maxEms="10"
         android:maxLines="1"
         android:text="远峰"
