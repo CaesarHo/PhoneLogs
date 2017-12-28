@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.caesar.phonelogs.R;
 import com.caesar.phonelogs.utils.CallInfoLog;
+import com.caesar.phonelogs.utils.DLog;
 import com.caesar.phonelogs.utils.TransitionTime;
 
 import java.text.SimpleDateFormat;
@@ -145,6 +146,10 @@ public class CallLogAdapter extends RecyclerView.Adapter<CallLogAdapter.ViewHold
         if ("0".equals(duration)) {
             tvDuration.setText("");
         } else {
+            if (duration == null){
+                DLog.d("CallLogAdapter","duration == null");
+                return;
+            }
             int totalSecond = Integer.parseInt(duration);
 //            totalSecond /= 1000;
             int minute = totalSecond / 60;

@@ -48,4 +48,36 @@
             <enum name="stretch" value="3" />
         </attr>
     </declare-styleable>
+
+
+    <string-array name="permissions">
+        <item>@string/permission_recode_audio_hint</item>
+        <item>@string/permission_get_accounts_hint</item>
+        <item>@string/permission_read_phone_hint</item>
+        <item>@string/permission_call_phone_hint</item>
+        <item>@string/permission_camera_hint</item>
+        <item>@string/permission_access_fine_location_hint</item>
+        <item>@string/permission_access_coarse_location_hint</item>
+        <item>@string/permission_read_external_hint</item>
+        <item>@string/permission_white_external_hint</item>
+    </string-array>
+
+
+    <declare-styleable name="RoundNumProgressView">
+        <attr name="roundColor" format="color" />
+        <attr name="roundProgressColor" format="color" />
+        <attr name="roundWidth" format="dimension"/>
+        <attr name="percentTextColor" format="color" />
+        <attr name="percentTextSize" format="dimension" />
+        <attr name="maxProgress" format="integer"/>
+        <attr name="percentTextDisplayable" format="boolean"/>
+        <attr name="rotateOrientation">
+            <enum name="counterclockwise" value="0"/>
+            <enum name="clockwise" value="1"/>
+        </attr>
+        <attr name="style">
+            <enum name="stroke" value="0"/>
+            <enum name="fill" value="1"/>
+        </attr>
+    </declare-styleable>
 </resources>

@@ -2,12 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.caesar.phonelogs.fragments.BlankFragment">
+    android:background="@color/colorPrimary"
+    tools:context="com.caesar.phonelogs.fragments.RotateFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
-
+    <include layout="@layout/content_rotate"/>
 </FrameLayout>

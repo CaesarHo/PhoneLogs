@@ -90,7 +90,7 @@ public class App extends Application implements DistributedHandler.HandlerPart {
         return false;
     }
 
-    public static Bitmap createCircleBitmap(Bitmap bitmap, int radio) {
+    public Bitmap createCircleBitmap(Bitmap bitmap, int radio) {
         int min = Math.min(bitmap.getWidth(), bitmap.getHeight());
         Paint paint = new Paint();
         paint.setAntiAlias(true);

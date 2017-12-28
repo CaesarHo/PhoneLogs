@@ -72,11 +72,6 @@ public class SystemDataManager {
                         App.getInstance().getContactInfo().clear();
                         while (dataCursor.moveToNext()) {
                             String type = dataCursor.getString(dataCursor.getColumnIndex(Phone.MIMETYPE));
-//                            byte[] bytes = dataCursor.getBlob(dataCursor.getColumnIndex(Phone.DATA15));
-//                                if (bytes != null) {
-//                                    Bitmap photo = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-//                                    DLog.d(TAG, "getContacts bytes = " + bytes.length);
-//                                }
                             try {
                                 // 1.2 获取各种电话信息
                                 if (Phone.CONTENT_ITEM_TYPE.equals(type)) {
